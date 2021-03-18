@@ -1,0 +1,18 @@
+author: Deomid "rojer" Ryabkov <rojer@rojer.me>
+description: VEML7700 driver
+version: 1.0.0
+
+includes:
+  - include
+
+sources:
+  - src
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/i2c
+
+tags:
+  - c
+  - docs:drivers:VEML7700
+
+manifest_version: 2017-09-29
