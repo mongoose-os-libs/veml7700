@@ -150,8 +150,9 @@ bool mgos_veml7700_set_cfg(struct mgos_veml7700 *ctx, uint16_t cfg,
   }
   ctx->coef = coef;
   int intvl_ms = mgos_veml7700_calc_interval_ms(ctx->cfg, ctx->psm);
+  int meas_time_ms = mgos_veml7700_calc_interval_ms(ctx->cfg, 0);
   ctx->meas_interval_micros = intvl_ms * 1000;
-  ctx->first_sample_micros = mgos_uptime_micros() + ctx->meas_interval_micros;
+  ctx->first_sample_micros = mgos_uptime_micros() + (meas_time_ms + 50) * 1000;
   ctx->next_sample_micros = ctx->first_sample_micros;
   // LOG(LL_INFO,
   //    ("cfg 0x%04x psm 0x%04x intvl %d ms", ctx->cfg, ctx->psm, intvl_ms));
@@ -268,12 +269,13 @@ bool mgos_veml7700_adjust(struct mgos_veml7700 *ctx) {
 float mgos_veml7700_read_lux(struct mgos_veml7700 *ctx, bool adjust) {
   if (ctx == NULL) return -1;
   int val = mgos_veml7700_read_reg(ctx, MGOS_VEML7700_REG_ALS);
+  float res = val * ctx->coef;
+  // LOG(LL_INFO, ("%d %.4f %.4f %lld %lld", val, ctx->coef, res,
+  // mgos_uptime_micros(), ctx->first_sample_micros));
   if (val < 0) return -2;
   if (val == 0 && mgos_uptime_micros() < ctx->first_sample_micros) {
     return -3;
   }
-  float res = val * ctx->coef;
-  // LOG(LL_INFO, ("%d %.4f %.4f", val, ctx->coef, res));
   if (adjust) mgos_veml7700_adjust_als(ctx, val);
   return res;
 }
