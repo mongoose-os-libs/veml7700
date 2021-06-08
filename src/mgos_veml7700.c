@@ -159,7 +159,7 @@ bool mgos_veml7700_set_cfg(struct mgos_veml7700 *ctx, uint16_t cfg,
   return true;
 }
 
-int mgos_bh1750_get_meas_interval_ms(struct mgos_veml7700 *ctx) {
+int mgos_veml7700_get_meas_interval_ms(struct mgos_veml7700 *ctx) {
   return ctx->meas_interval_micros / 1000;
 }
 
